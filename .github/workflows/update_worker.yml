@@ -8,6 +8,11 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
+    
+    # ++++++++++  这是你需要添加的部分 ++++++++++
+    permissions:
+      contents: write  # 授予工作流对仓库内容的写入权限
+    # +++++++++++++++++++++++++++++++++++++++++++
 
     steps:
       - name: Checkout 仓库
@@ -34,8 +39,9 @@ jobs:
 
       - name: 判断是否需要更新
         id: need_update
+        # 注意: 这里最好使用 env 上下文来访问环境变量
         run: |
-          if [ "$current_version" = "$latest_tag" ]; then
+          if [ "${{ env.current_version }}" = "${{ env.latest_tag }}" ]; then
             echo "No update needed."
             echo "need_update=false" >> $GITHUB_ENV
           else
